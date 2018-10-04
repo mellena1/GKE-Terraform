@@ -2,6 +2,12 @@ resource "google_container_cluster" "k8s-cluster" {
   name = "andrewmellenorg"
   zone = "us-east1-b"
   remove_default_node_pool = true
+  min_master_version = "1.10.7-gke.2"
+
+  master_auth {
+    username = ""
+    password = ""
+  }
 
   addons_config {
     kubernetes_dashboard {
