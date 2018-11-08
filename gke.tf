@@ -2,7 +2,7 @@ resource "google_container_cluster" "k8s-cluster" {
   name = "andrewmellenorg"
   zone = "us-east1-b"
   remove_default_node_pool = true
-  min_master_version = "1.10.7-gke.2"
+  min_master_version = "1.11.2-gke.9"
 
   master_auth {
     username = ""
@@ -22,35 +22,37 @@ resource "google_container_cluster" "k8s-cluster" {
   # }
 }
 
-resource "google_container_node_pool" "cheap-pool" {
-  name = "cheap-pool"
-  cluster = "${google_container_cluster.k8s-cluster.name}"
-  zone = "us-east1-b"
-  node_count = "1"
+# resource "google_container_node_pool" "cheap-pool" {
+#   name = "cheap-pool"
+#   cluster = "${google_container_cluster.k8s-cluster.name}"
+#   zone = "us-east1-b"
+#   node_count = "1"
 
-  node_config {
-    machine_type = "f1-micro"
-  }
+#   node_config {
+#     machine_type = "f1-micro"
+#   }
 
-  # autoscaling {
-  #   min_node_count = 1
-  #   max_node_count = 2
-  # }
+#   # autoscaling {
+#   #   min_node_count = 1
+#   #   max_node_count = 2
+#   # }
 
-  management {
-    auto_repair  = true
-    auto_upgrade = true
-  }
-}
+#   management {
+#     auto_repair  = true
+#     auto_upgrade = true
+#   }
+# }
 
 resource "google_container_node_pool" "slightly-less-cheap-pool" {
   name = "slightly-less-cheap-pool"
   cluster = "${google_container_cluster.k8s-cluster.name}"
   zone = "us-east1-b"
-  node_count = "1"
+  node_count = "2"
+  version = "1.11.2-gke.9"
 
   node_config {
-    machine_type = "g1-small"
+    machine_type = "g1-small"    
+    disk_size_gb = 30
   }
 
   # autoscaling {
@@ -60,7 +62,6 @@ resource "google_container_node_pool" "slightly-less-cheap-pool" {
 
   management {
     auto_repair  = true
-    auto_upgrade = true
   }
 }
 
