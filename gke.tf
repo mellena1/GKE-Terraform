@@ -31,6 +31,7 @@ resource "google_container_node_pool" "cheap-pool" {
 
   node_config {
     machine_type = "f1-micro"
+    disk_size_gb = 30
   }
 
   # autoscaling {
