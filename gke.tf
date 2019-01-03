@@ -1,7 +1,7 @@
 resource "google_container_cluster" "k8s-cluster" {
   name = "andrewmellenorg"
   remove_default_node_pool = true
-  min_master_version = "1.10.9-gke.3"
+  min_master_version = "1.11.5-gke.5"
   zone = "us-east1-b"
 
   master_auth {
@@ -27,7 +27,7 @@ resource "google_container_node_pool" "slightly-less-cheap-pool" {
   cluster = "${google_container_cluster.k8s-cluster.name}"
   zone = "us-east1-b"
   node_count = "2"
-  version = "1.10.9-gke.0"
+  version = "1.11.5-gke.5"
 
   node_config {
     machine_type = "g1-small"    
