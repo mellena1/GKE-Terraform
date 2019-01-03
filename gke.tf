@@ -22,28 +22,6 @@ resource "google_container_cluster" "k8s-cluster" {
   # }
 }
 
-resource "google_container_node_pool" "cheap-pool" {
-  name = "cheap-pool"
-  cluster = "${google_container_cluster.k8s-cluster.name}"
-  zone = "us-east1-b"
-  node_count = "1"
-  version = "1.10.9-gke.0"
-
-  node_config {
-    machine_type = "f1-micro"
-    disk_size_gb = 30
-  }
-
-  # autoscaling {
-  #   min_node_count = 1
-  #   max_node_count = 2
-  # }
-
-  management {
-    auto_repair  = true
-  }
-}
-
 resource "google_container_node_pool" "slightly-less-cheap-pool" {
   name = "slightly-less-cheap-pool"
   cluster = "${google_container_cluster.k8s-cluster.name}"
