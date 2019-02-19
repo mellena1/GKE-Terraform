@@ -22,25 +22,68 @@ resource "google_container_cluster" "k8s-cluster" {
   # }
 }
 
-resource "google_container_node_pool" "slightly-less-cheap-pool" {
-  name = "slightly-less-cheap-pool"
-  cluster = "${google_container_cluster.k8s-cluster.name}"
-  zone = "us-east1-b"
-  node_count = "2"
+resource "google_compute_address" "static-ip" {
+  name = "ipv4-address"
+}
+
+resource "google_container_node_pool" "ingress" {
+  name       = "ingress"
+  zone       = "us-east1-b"
+  cluster    = "${google_container_cluster.k8s-cluster.name}"
+  node_count = 1
   version = "1.11.5-gke.5"
 
-  node_config {
-    machine_type = "g1-small"    
-    disk_size_gb = 30
+  management = {
+    auto_repair  = true
+    auto_upgrade = false
   }
 
-  # autoscaling {
-  #   min_node_count = 1
-  #   max_node_count = 2
-  # }
+  node_config {
+    preemptible  = false
+    machine_type = "f1-micro"
+    disk_size_gb = 20
 
-  management {
+    taint = {
+      key    = "ingress"
+      value  = "true"
+      effect = "NO_EXECUTE"
+    }
+
+    labels = {
+      ingress = "true"
+    }
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+    ]
+  }
+}
+
+resource "google_container_node_pool" "worker-n1-standard-2" {
+  name       = "worker-n1-standard-2"
+  zone       = "us-east1-b"
+  cluster    = "${google_container_cluster.k8s-cluster.name}"
+  node_count = 1
+  version = "1.11.5-gke.5"
+
+  management = {
     auto_repair  = true
+    auto_upgrade = true
+  }
+
+  node_config {
+    preemptible  = true
+    machine_type = "n1-standard-2"
+
+    oauth_scopes = [
+      "https://www.googleapis.com/auth/compute",
+      "https://www.googleapis.com/auth/devstorage.read_only",
+      "https://www.googleapis.com/auth/logging.write",
+      "https://www.googleapis.com/auth/monitoring",
+    ]
   }
 }
 
@@ -51,3 +94,8 @@ output "cluster_name" {
 output "zone" {
   value = "${google_container_cluster.k8s-cluster.zone}"
 }
+
+output "static-ip" {
+  value = "${google_compute_address.static-ip.address}"
+}
+
