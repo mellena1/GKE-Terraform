@@ -32,6 +32,11 @@ resource "google_container_node_pool" "worker-n1-standard-2" {
   node_count = 1
   version = "1.11.5-gke.5"
 
+  autoscaling = {
+    min_node_count = 1
+    max_node_count = 1
+  }
+
   management = {
     auto_repair  = true
     auto_upgrade = true
