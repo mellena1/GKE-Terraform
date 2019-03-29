@@ -30,7 +30,7 @@ resource "google_container_node_pool" "worker-n1-standard-2" {
   zone       = "us-east1-b"
   cluster    = "${google_container_cluster.k8s-cluster.name}"
   node_count = 1
-  version = "1.11.5-gke.5"
+  version = "1.11.7-gke.12"
 
   autoscaling = {
     min_node_count = 1
